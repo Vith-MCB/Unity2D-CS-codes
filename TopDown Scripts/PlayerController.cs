@@ -10,6 +10,12 @@ public class PlayerController : MonoBehaviour
     #region Move
     private Vector2 movementInput;
     public float moveSpeed = 1f;
+
+    public static string directionLooked = "";
+
+    public static string facing = "Right";
+
+    public static bool isRunning = false;
     #endregion
     
 
@@ -23,6 +29,11 @@ public class PlayerController : MonoBehaviour
     void Start()
     {
         player = GetComponent<Rigidbody2D>();
+    }
+
+    void Update()
+    {
+        directionLooked = GetPlayerDirection();
     }
 
     void FixedUpdate() {
@@ -65,4 +76,51 @@ public class PlayerController : MonoBehaviour
         else{return false;}
     }
 
+    private string GetPlayerDirection(){
+        float horizontalInput = Input.GetAxisRaw("Horizontal");
+        float verticalInput = Input.GetAxisRaw("Vertical");
+
+        if (Mathf.Abs(horizontalInput) > Mathf.Abs(verticalInput))
+        {
+            if (horizontalInput > 0)
+            {
+                isRunning = true;
+                facing = "Right";
+                return "Right";
+
+            }
+            else if(horizontalInput == 0)
+            {
+                isRunning = false;
+                return "Idle";
+            }
+            else
+            {
+                isRunning = true;
+                facing = "Left";
+                return "Left";
+            }
+        }
+        else
+        {
+            if (verticalInput > 0)
+            {
+                isRunning = true;
+                facing = "Up";
+                return "Up";
+            }
+            else if (verticalInput == 0)
+            {
+                isRunning = false;
+                return "Idle";
+            }
+            else
+            {
+                isRunning = true;
+                facing = "Down";
+                return "Down";
+            }
+        }
+        
+    }
 }

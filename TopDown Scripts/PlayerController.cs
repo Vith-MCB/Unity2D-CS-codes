@@ -18,6 +18,10 @@ public class PlayerController : MonoBehaviour
     public static bool isRunning = false;
     #endregion
     
+    #region Attack
+    public static bool isAttacking = false;
+
+    #endregion
 
     #region Collisions
     public ContactFilter2D movementFilter;
@@ -34,6 +38,7 @@ public class PlayerController : MonoBehaviour
     void Update()
     {
         directionLooked = GetPlayerDirection();
+        attack();
     }
 
     void FixedUpdate() {
@@ -123,4 +128,11 @@ public class PlayerController : MonoBehaviour
         }
         
     }
+
+    private void attack(){
+        if(Input.GetKeyDown(KeyCode.K)){
+            isAttacking = true;
+        }
+    }
+
 }

@@ -5,7 +5,7 @@ using UnityEngine.InputSystem;
 
 public class PlayerController : MonoBehaviour
 {
-    private Rigidbody2D player;
+    public static Rigidbody2D player;
 
     #region Move
     private Vector2 movementInput;
@@ -42,12 +42,14 @@ public class PlayerController : MonoBehaviour
     }
 
     void FixedUpdate() {
-        MovePlayer();
+        if(!isAttacking)
+            MovePlayer();
     }
 
     void OnMove(InputValue movementValue){
         movementInput = movementValue.Get<Vector2>();
     }
+
 
     public void MovePlayer(){
         if(movementInput != Vector2.zero){
@@ -134,5 +136,6 @@ public class PlayerController : MonoBehaviour
             isAttacking = true;
         }
     }
+
 
 }

@@ -18,6 +18,8 @@ public class slimeAnimations : MonoBehaviour
 
     private const string SLIME_DEAD = "slimeDead";
 
+    private const string SLIME_HIT = "slimeDamage";
+
     #endregion
 
     void Start()
@@ -28,7 +30,7 @@ public class slimeAnimations : MonoBehaviour
 
     void Update()
     {
-        
+        AnimationsState();
     }
 
     private void ChangeAnimationState(string newState)
@@ -43,13 +45,17 @@ public class slimeAnimations : MonoBehaviour
         currentState = newState;
     }
 
-/*
     public void AnimationsState()
     {
         if (slimeAI.isAware)
         {
             ChangeAnimationState(SLIME_AWARE);
         }
+        else if(slimeAI.gotDamaged)
+        {
+            ChangeAnimationState(SLIME_HIT);
+        }
+        
         else if (slimeAI.isDead)
         {
             ChangeAnimationState(SLIME_DEAD);
@@ -63,5 +69,17 @@ public class slimeAnimations : MonoBehaviour
             ChangeAnimationState(SLIME_IDLE);
         }
     }
-    */
+
+
+    private void DestroyDeadSlime()
+    {
+        Debug.Log("Destroying");
+        Destroy(gameObject);
+    }
+
+    private void ReadyToGetHit()
+    {
+        slimeAI.gotDamaged = false;
+        slimeAI.isInvencible = false;
+    }
 }

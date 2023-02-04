@@ -6,6 +6,7 @@ public class SwordAttack : MonoBehaviour
 {
     [SerializeField] private Collider2D swordCollider;
     [SerializeField] private Collider2D swordColUpDown;
+    [SerializeField] private Rigidbody2D playerRB;
 
     private bool attackBool;
 
@@ -15,17 +16,23 @@ public class SwordAttack : MonoBehaviour
 
     Vector2 rightAttackOffset;
     Vector2 downAttackOffset;
+    private float damage = 1;
+
+    public float knockbackForce = 10f;
 
     private void Start() {
         swordCollider = GetComponent<Collider2D>();
         rightAttackOffset = transform.localPosition;
         downAttackOffset = swordColUpDown.transform.localPosition;
+
+        playerRB = GetComponentInParent<Rigidbody2D>();
     }
 
     private void Update() {
         attackBool = PlayerController.isAttacking;
         if(attackBool){Attack();}
         else{StopAttack();}
+
     }
 
     public void Attack(){
@@ -46,21 +53,29 @@ public class SwordAttack : MonoBehaviour
     }
     public void AttackRight(){
         transform.localPosition = rightAttackOffset;
+        Vector2 opositeDirection = new Vector2(-rightAttackOffset.x, 0f);
+        playerRB.AddForce(opositeDirection, ForceMode2D.Impulse);
         swordColUpDown.enabled = false;//This is to prevent the player from attacking with the sword and the swordColUpDown at the same time
         swordCollider.enabled = true;
     }
     public void AttackLeft(){
         transform.localPosition = new Vector2(-rightAttackOffset.x, rightAttackOffset.y);
+        Vector2 opositeDirection = new Vector2(rightAttackOffset.x, 0f);
+        playerRB.AddForce(opositeDirection, ForceMode2D.Impulse);
         swordColUpDown.enabled = false;//This is to prevent the player from attacking with the sword and the swordColUpDown at the same time
         swordCollider.enabled = true;
     }
     public void AttackUp(){
         swordColUpDown.transform.localPosition = new Vector2(downAttackOffset.x, -downAttackOffset.y);
+        Vector2 opositeDirection = new Vector2(0f, rightAttackOffset.y);
+        playerRB.AddForce(opositeDirection, ForceMode2D.Impulse);
         swordCollider.enabled = false; //This is to prevent the player from attacking with the sword and the swordColUpDown at the same time
         swordColUpDown.enabled = true;
     }
     public void AttackDown(){
         swordColUpDown.transform.localPosition = downAttackOffset;
+        Vector2 opositeDirection = new Vector2(0f, -rightAttackOffset.y);
+        playerRB.AddForce(opositeDirection, ForceMode2D.Impulse);
         swordCollider.enabled = false; //This is to prevent the player from attacking with the sword and the swordColUpDown at the same time
         swordColUpDown.enabled = true;
     }
@@ -68,5 +83,24 @@ public class SwordAttack : MonoBehaviour
         swordCollider.enabled = false;
         swordColUpDown.enabled = false;
     }
+
+
+    private void OnTriggerEnter2D(Collider2D other) {
+        IDamageable damageableObject = other.GetComponent<IDamageable>();
+        //Calculating direction between player and slime
+        Vector3 parentPosition = gameObject.GetComponentInParent<Transform>().position;
+        Vector2 direction = (Vector2)(other.gameObject.transform.position - parentPosition).normalized;
+        //Adding force to the slime
+        Vector2 knockback = direction * knockbackForce;
+
+        if(damageableObject != null){
+            damageableObject.OnHit(damage, knockback);
+        } else {
+            Debug.Log("Object is not damageable");
+        }
+        
+
+    }
+
     
 }

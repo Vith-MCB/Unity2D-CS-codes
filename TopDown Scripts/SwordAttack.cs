@@ -86,20 +86,20 @@ public class SwordAttack : MonoBehaviour
 
 
     private void OnTriggerEnter2D(Collider2D other) {
-        IDamageable damageableObject = other.GetComponent<IDamageable>();
-        //Calculating direction between player and slime
-        Vector3 parentPosition = gameObject.GetComponentInParent<Transform>().position;
-        Vector2 direction = (Vector2)(other.gameObject.transform.position - parentPosition).normalized;
-        //Adding force to the slime
-        Vector2 knockback = direction * knockbackForce;
+        IDamageable damageable = other.GetComponent<IDamageable>();
 
-        if(damageableObject != null){
-            damageableObject.OnHit(damage, knockback);
-        } else {
+        if(damageable != null){
+            //Calculating direction between player and slime
+            Vector3 parentPosition = gameObject.GetComponentInParent<Transform>().position;
+            Vector2 direction = (Vector2)(other.gameObject.transform.position - parentPosition).normalized;
+            //Adding force to the slime
+            Vector2 knockback = direction * knockbackForce;
+
+            damageable.OnHit(damage, knockback);
+        }else{
             Debug.Log("Object is not damageable");
         }
         
-
     }
 
     

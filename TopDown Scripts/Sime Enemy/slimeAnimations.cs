@@ -7,6 +7,8 @@ public class slimeAnimations : MonoBehaviour
     private Animator slimeAnimator;
     private SpriteRenderer spriteRenderer;
 
+    private slimeAI slime;
+
     private string currentState;
 
     #region Animations States constants
@@ -26,6 +28,8 @@ public class slimeAnimations : MonoBehaviour
     {
         slimeAnimator = GetComponent<Animator>();
         spriteRenderer = GetComponent<SpriteRenderer>();
+
+        slime = GetComponent<slimeAI>();
     }
 
     void Update()
@@ -47,39 +51,33 @@ public class slimeAnimations : MonoBehaviour
 
     public void AnimationsState()
     {
-        if (slimeAI.isAware)
-        {
+        if(slime.isAware && !slime.isDead && !slime.isJumping && !slime.gotDamaged){
             ChangeAnimationState(SLIME_AWARE);
         }
-        else if(slimeAI.gotDamaged)
-        {
+        else if(slime.gotDamaged){
             ChangeAnimationState(SLIME_HIT);
         }
-        
-        else if (slimeAI.isDead)
-        {
+        else if(slime.isDead){
             ChangeAnimationState(SLIME_DEAD);
         }
-        else if (slimeAI.isJumping)
-        {
+        else if(slime.isJumping){
             ChangeAnimationState(SLIME_JUMP);
         }
-        else
-        {
+        else{
             ChangeAnimationState(SLIME_IDLE);
         }
+        
     }
 
 
     private void DestroyDeadSlime()
     {
-        Debug.Log("Destroying");
         Destroy(gameObject);
     }
 
     private void ReadyToGetHit()
     {
-        slimeAI.gotDamaged = false;
-        slimeAI.isInvencible = false;
+        slime.gotDamaged = false;
+        slime.isInvencible = false;
     }
 }

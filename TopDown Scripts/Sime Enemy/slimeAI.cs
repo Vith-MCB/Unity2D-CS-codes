@@ -75,9 +75,8 @@ public class slimeAI : MonoBehaviour, IDamageable
         isDead = true;
     }
 
-    private void OnTriggerEnter2D(Collider2D collision)
-    {
-        if(collision.gameObject.tag == "Player"){
+    void OnCollisionEnter2D(Collision2D other) {
+        if(other.gameObject.tag == "Player"){
             Debug.Log("Player hit");
         }
     }
@@ -140,18 +139,17 @@ public class slimeAI : MonoBehaviour, IDamageable
 
     private void FixedUpdate()
     {
-        if (isCharging && IsPlayerVisible())
+        if (isCharging)
         {
-            Debug.Log(IsPlayerVisible());
             // Use the Lerp function to smooth the movement
             slimeRb.velocity = Vector2.Lerp(slimeRb.velocity, chargingDirection * chargingSpeed, Time.deltaTime * 5);
         }
     }
 
     private void BasicAI(float Distance){
-        if(Distance <= 1f){
+        if(Distance <= 1f && IsPlayerVisible()){
             isAware = true;
-            if(!isCharging){
+            if(!isCharging ){
                 StartCoroutine(waiter());
             }
         }
@@ -164,12 +162,18 @@ public class slimeAI : MonoBehaviour, IDamageable
     {
         //Wait for some seconds (for example, 2 seconds)
         yield return new WaitForSecondsRealtime(2);
-        Debug.Log("Charging");
         //charge at player direction
-        Charge();
-        //Wait for some seconds (for example, 4 seconds)
-        yield return new WaitForSecondsRealtime(0.5f);
-        isCharging = false;
+        if(!gotDamaged){Charge();}
+        
+
+        if(IsPlayerVisible()){
+            //Wait for some seconds (for example, 2 seconds)
+            yield return new WaitForSecondsRealtime(0.5f);
+            isCharging = false;
+        }
+        else{
+            isCharging = false;
+        }
     }
 
 

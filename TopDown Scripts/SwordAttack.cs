@@ -66,15 +66,15 @@ public class SwordAttack : MonoBehaviour
         swordCollider.enabled = true;
     }
     public void AttackUp(){
-        swordColUpDown.transform.localPosition = new Vector2(downAttackOffset.x, -downAttackOffset.y);
-        Vector2 opositeDirection = new Vector2(0f, rightAttackOffset.y);
+        swordColUpDown.transform.localPosition = new Vector2(downAttackOffset.x, -downAttackOffset.y + 0.05f);
+        Vector2 opositeDirection = new Vector2(0f, downAttackOffset.y);
         playerRB.AddForce(opositeDirection, ForceMode2D.Impulse);
         swordCollider.enabled = false; //This is to prevent the player from attacking with the sword and the swordColUpDown at the same time
         swordColUpDown.enabled = true;
     }
     public void AttackDown(){
         swordColUpDown.transform.localPosition = downAttackOffset;
-        Vector2 opositeDirection = new Vector2(0f, -rightAttackOffset.y);
+        Vector2 opositeDirection = new Vector2(0f, -downAttackOffset.y);
         playerRB.AddForce(opositeDirection, ForceMode2D.Impulse);
         swordCollider.enabled = false; //This is to prevent the player from attacking with the sword and the swordColUpDown at the same time
         swordColUpDown.enabled = true;
@@ -90,7 +90,8 @@ public class SwordAttack : MonoBehaviour
 
         if(damageable != null){
             //Calculating direction between player and slime
-            Vector3 parentPosition = gameObject.GetComponentInParent<Transform>().position;
+            //Vector3 parentPosition = gameObject.GetComponentInParent<Transform>().position;
+            Vector3 parentPosition = transform.parent.position;
             Vector2 direction = (Vector2)(other.gameObject.transform.position - parentPosition).normalized;
             //Adding force to the slime
             Vector2 knockback = direction * knockbackForce;
